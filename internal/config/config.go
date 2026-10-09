@@ -58,3 +58,29 @@ func Read() (Config, error) {
 
 	return config, nil
 }
+
+func (c Config) SetUser(username string) error {
+	c.CurrentUsername = username
+	return write(c)
+}
+
+func write(c Config) error {
+	configPath, err := getConfigFilePath()
+
+	if err != nil {
+		return err
+	}
+
+	data, err := json.Marshal(c)
+
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(configPath, data, 0600)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
