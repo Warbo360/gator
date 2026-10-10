@@ -2,43 +2,22 @@ package main
 
 import (
 	"errors"
-	"fmt"
 )
 
-// struct for commands, these will live in the commands registry
+// 1.0 struct for commands, these will live in the commands registry
 
 type command struct {
 	name string
 	args []string
 }
 
-// struct acting as a commands registry
+// 2.0 struct acting as a commands registry
 
 type commands struct {
 	cmds map[string]func(*state, command) error
 }
 
-// Login handler for setting the config username as the passed arg
-
-func handlerLogin(s *state, cmd command) error {
-
-	// Check passed command args slice if empty, if so return error
-
-	if len(cmd.args) == 0 {
-		return errors.New("username required")
-	}
-
-	// Set the state's config username to the passed 1st arg and error check
-
-	err := s.cfg.SetUser(cmd.args[0])
-	if err != nil {
-		return err
-	}
-
-    fmt.Printf("%v is now logged in\n", s.cfg.CurrentUsername)
-
-	return nil
-}
+// 2.1 method for commands to run a registered command
 
 func (c *commands) run(s *state, cmd command) error {
 
@@ -49,6 +28,8 @@ func (c *commands) run(s *state, cmd command) error {
 
 	return func_val(s, cmd)
 }
+
+// 2.2 method for commands to run a registered command
 
 func (c *commands) register(name string, f func(*state, command) error) {
 	c.cmds[name] = f
