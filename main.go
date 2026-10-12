@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+import _ "github.com/lib/pq"
+
 func main() {
 
 	currentCfg, err := config.Read()
