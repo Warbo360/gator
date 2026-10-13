@@ -8,9 +8,11 @@ package database
 import (
 	"context"
 	"time"
+
+	"github.com/google/uuid"
 )
 
-const createUser = `-- name: createUser :one
+const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, created_at, updated_at, name)
 VALUES (
     $1,
@@ -21,14 +23,14 @@ VALUES (
 RETURNING id, created_at, updated_at, name
 `
 
-type createUserParams struct {
-	ID        int32
+type CreateUserParams struct {
+	ID        uuid.UUID
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Name      string
 }
 
-func (q *Queries) createUser(ctx context.Context, arg createUserParams) (User, error) {
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, createUser,
 		arg.ID,
 		arg.CreatedAt,
