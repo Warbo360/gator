@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"context"
 )
 
 func handlerLogin(s *state, cmd command) error {
@@ -13,14 +14,21 @@ func handlerLogin(s *state, cmd command) error {
 		return errors.New("username required")
 	}
 
-	// Set the state's config username to the passed 1st arg and error check
+	// Check the passed state to access the database to check if the passed name is a user in the database
 
-	err := s.cfg.SetUser(cmd.args[0])
+	user, err := s.db.GetUser(context.Background(), cmd.args[0])
 	if err != nil {
 		return err
 	}
 
-    fmt.Printf("%v is now logged in\n", s.cfg.CurrentUsername)
+	// Set the state's config username to the passed 1st arg and error check
+
+	err = s.cfg.SetUser(user.Name)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("[UPDATE]: %v is now logged in\n", s.cfg.CurrentUsername)
 
 	return nil
 }
