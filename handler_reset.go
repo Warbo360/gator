@@ -11,7 +11,7 @@ func handlerReset(s *state, cmd command) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("users table reset succesfully")
+	fmt.Println("[UPDATE]: \"users\" SQL table reset succesfully")
 	return nil
 
 }

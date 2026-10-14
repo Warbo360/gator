@@ -14,12 +14,12 @@ func main() {
 
 	currentCfg, err := config.Read()
 	if err != nil {
-    	log.Fatalf("[ERROR]: Failed to read config file - %v", err)
+    	log.Fatalf("[ERROR]: Failed to read config file - \"%v\"", err)
 	}
 
 	db, err := sql.Open("postgres", currentCfg.DBURL)
 	if err != nil {
-		log.Fatalf("[ERROR]: Failed to open database connecition - %v", err)
+		log.Fatalf("[ERROR]: Failed to open database connecition - \"%v\"", err)
 	}
 	dbQueries := database.New(db)
 
@@ -36,7 +36,7 @@ func main() {
 
 	userArgs := os.Args
 	if len(userArgs) < 2 {
-    	log.Fatalf("[ERROR]: Not enough arguments passed")
+    	log.Fatalf("[ERROR]: No command given")
 	}
 
 	passedCommand := command{
@@ -46,6 +46,6 @@ func main() {
 
 	err = currentCommands.run(&currentState, passedCommand)
 	if err != nil {
-		log.Fatalf("[ERROR]: Failed to run passed command - %v", err)
+		log.Fatalf("[ERROR]: Failed to run passed command - \"%v\"", err)
 	}
 }
