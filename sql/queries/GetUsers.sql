@@ -1,7 +1,6 @@
--- name: GetUser :one
+-- name: GetUsers :many
+
 SELECT
-    *
+    name
 FROM
-    users
-WHERE
-    $1 = name;
+    users;
