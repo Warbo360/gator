@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"io"
 	"encoding/xml"
+	"html"
 )
 
 func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
@@ -32,10 +33,20 @@ func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 	if err := xml.Unmarshal(body, &rssFeed); err != nil {
 		return nil, err
 	}
+	rssFeed.unescapeHTML()
 
 	return &rssFeed, nil
 }
 
+// Helper function that takes in an RSSFeed pointer and modifies channels title and description and well as channel's
+// item's title and description with html.UnescapeString()
+
 func (r *RSSFeed) unescapeHTML() {
-	// Will be the helper function that will unescape HTML entities with html.UnescapeString()
+
+	r.Channel.Title = html.UnescapeString(r.Channel.Title)
+	r.Channel.Description = html.UnescapeString(r.Channel.Description)
+	for i := range r.Channel.Item {
+		r.Channel.Item[i].Title = html.UnescapeString(r.Channel.Item[i].Title)
+		r.Channel.Item[i].Description = html.UnescapeString(r.Channel.Item[i].Description)
+	}
 }
