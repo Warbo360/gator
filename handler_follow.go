@@ -40,6 +40,6 @@ func handlerFollow(s *state, cmd command) error {
 		return err
 	}
 
-	fmt.Printf("[UPDATE]: Feed %v followed by %v", feedFollow.FeedName, feedFollow.UserName)
+	fmt.Printf("[UPDATE]: Feed %v followed by %v\n", feedFollow.FeedName, feedFollow.UserName)
 	return nil
 }
