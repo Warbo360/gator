@@ -24,7 +24,7 @@ INSERT INTO
     )
 VALUES
     ($1, $2, $3, $4, $5, $6)
-RETURNING id, created_at, updated_at, name, url, user_id
+RETURNING id, created_at, updated_at, name, url, user_id, last_fetched_at
 `
 
 type MakeFeedParams struct {
@@ -53,6 +53,7 @@ func (q *Queries) MakeFeed(ctx context.Context, arg MakeFeedParams) (Feed, error
 		&i.Name,
 		&i.Url,
 		&i.UserID,
+		&i.LastFetchedAt,
 	)
 	return i, err
 }
