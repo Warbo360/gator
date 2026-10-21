@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func handlerAddFeed(s *state, cmd command) error {
+func handlerAddFeed(s *state, cmd command, user database.User) error {
 
 	// Check for two command args, those being the feeds name and feeds url
 
@@ -19,14 +19,6 @@ func handlerAddFeed(s *state, cmd command) error {
 
 	name := cmd.args[0]
 	url := cmd.args[1]
-
-	// Get current user that is logged in and set that as UserID
-
-	username := s.cfg.CurrentUsername
-	user, err := s.db.GetUser(context.Background(), username)
-	if err != nil {
-		return err
-	}
 
  	feedParams := database.MakeFeedParams{
 		ID: uuid.New(),
