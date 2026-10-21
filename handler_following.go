@@ -3,15 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/Warbo360/gator/internal/database"
 )
 
-func handlerFollowing(s *state, cmd command) error {
-
-	current_username := s.cfg.CurrentUsername
-	user, err := s.db.GetUser(context.Background(), current_username)
-	if err != nil {
-		return err
-	}
+func handlerFollowing(s *state, cmd command, user database.User) error {
 
 	feeds, err := s.db.GetFeedFollowsForUser(context.Background(), user.ID)
 	if err != nil {

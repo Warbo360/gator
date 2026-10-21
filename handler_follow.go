@@ -9,18 +9,13 @@ import (
 	"time"
 )
 
-func handlerFollow(s *state, cmd command) error {
+func handlerFollow(s *state, cmd command, user database.User) error {
 	
 	if len(cmd.args) != 1 {
 		return errors.New("usage: go run . follow <url>")
 	}
 
 	url := cmd.args[0]
-	username := s.cfg.CurrentUsername
-	user, err := s.db.GetUser(context.Background(), username)
-	if err != nil {
-		return err
-	}
 
 	feed, err := s.db.GetFeed(context.Background(), url)
 	if err != nil {
