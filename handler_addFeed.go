@@ -37,7 +37,26 @@ func handlerAddFeed(s *state, cmd command) error {
 		UserID: user.ID,
 	}
 
+
 	newFeed, err := s.db.MakeFeed(context.Background(), feedParams)
+	if err != nil {
+		return err
+	}
+
+	feedUUID, err := s.db.GetFeed(context.Background(), newFeed.Url)
+	if err != nil {
+		return err
+	}
+
+	feedFollowParam := database.CreateFeedFollowParams {
+		ID: uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID: user.ID,
+		FeedID: feedUUID,
+	}
+
+	_, err = s.db.CreateFeedFollow(context.Background(), feedFollowParam)
 	if err != nil {
 		return err
 	}
