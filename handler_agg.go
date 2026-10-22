@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"database/sql"
 	"github.com/Warbo360/gator/internal/database"
-	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/lib/pq"
 )
 
 func handlerAgg(s *state, cmd command) error {
@@ -66,15 +66,17 @@ func scrapeFeeds(s *state) error {
 			PublishedAt: timeParser(item.PubDate),
 			FeedID: feed.ID,
 		}
+
 		err = s.db.MakePost(context.Background(), postParams)
-		pgErr, ok := err.(*pgconn.PgError)
-		if ok && pgErr.Code == "23505" {
+		pqErr, ok := err.(*pq.Error)
+		if ok && pqErr.Code == "23505" {
 		} else if ok {
-			return pgErr
+			return pqErr
 		} else if !ok && err != nil {
 			return err
 		}
 	}
+
 	fmt.Println("[UPDATE]: Feed successfully posted")
 	return nil
 }
