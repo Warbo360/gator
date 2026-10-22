@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"errors"
 	"time"
+	"github.com/google/uuid"
+	"database/sql"
+	"github.com/Warbo360/gator/internal/database"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 func handlerAgg(s *state, cmd command) error {
@@ -52,7 +56,66 @@ func scrapeFeeds(s *state) error {
 	}
 
 	for _, item := range rssFeed.Channel.Item {
-		fmt.Printf("Feed Title: %v\n", item.Title)
+		postParams := database.MakePostParams{
+			ID: uuid.New(),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			Title: item.Title,
+			Url: item.Link,
+			Description: itemDescParser(item.Description),
+			PublishedAt: timeParser(item.PubDate),
+			FeedID: feed.ID,
+		}
+		err = s.db.MakePost(context.Background(), postParams)
+		pgErr, ok := err.(*pgconn.PgError)
+		if ok && pgErr.Code == "23505" {
+		} else if ok {
+			return pgErr
+		} else if !ok && err != nil {
+			return err
+		}
 	}
+	fmt.Println("[UPDATE]: Feed successfully posted")
 	return nil
+}
+
+func timeParser(timeString string) sql.NullTime {
+	formats := []string{
+		time.Layout,
+		time.ANSIC,
+		time.UnixDate,
+		time.RubyDate,
+		time.RFC822,
+		time.RFC822Z,
+		time.RFC850,
+		time.RFC1123,
+		time.RFC1123Z,
+		time.RFC3339,
+		time.RFC3339Nano,
+		time.Kitchen,
+	}
+	for _, format := range formats {
+		parsedTime, err := time.Parse(format, timeString)
+		if err == nil {
+			return sql.NullTime{
+				Time: parsedTime,
+				Valid: true,
+			}
+		}
+	}
+	return sql.NullTime{
+		Valid: false,
+	}
+}
+
+func itemDescParser(itemDesc string) sql.NullString {
+	if itemDesc == "" {
+		return sql.NullString{
+			Valid: false,
+		}
+	}
+	return sql.NullString{
+		String: itemDesc,
+		Valid: true,
+	}
 }
