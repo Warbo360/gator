@@ -17,6 +17,8 @@ func handlerAddFeed(s *state, cmd command, user database.User) error {
 		return errors.New("feed name and url needed, usage: addfeed <name> <url>")
 	}
 
+	// Builds params for MakeFeed below
+
 	name := cmd.args[0]
 	url := cmd.args[1]
 
@@ -29,6 +31,7 @@ func handlerAddFeed(s *state, cmd command, user database.User) error {
 		UserID: user.ID,
 	}
 
+	// MakeFeed query which inserts a entry into the feeds table
 
 	newFeed, err := s.db.MakeFeed(context.Background(), feedParams)
 	if err != nil {
@@ -39,6 +42,8 @@ func handlerAddFeed(s *state, cmd command, user database.User) error {
 	if err != nil {
 		return err
 	}
+
+	// Creates a feed follow automatically for when a feed is added by a user
 
 	feedFollowParam := database.CreateFeedFollowParams {
 		ID: uuid.New(),
