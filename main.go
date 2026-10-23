@@ -1,22 +1,22 @@
 package main
 
 import (
-	"github.com/Warbo360/gator/internal/config"
-	"github.com/Warbo360/gator/internal/database"
+	"database/sql"
 	"log"
 	"os"
-	"database/sql"
+
+	"github.com/Warbo360/gator/internal/config"
+	"github.com/Warbo360/gator/internal/database"
 )
 
 import _ "github.com/lib/pq"
 
 func main() {
-
 	// Gets the config file from users home dir
 
 	currentCfg, err := config.Read()
 	if err != nil {
-    	log.Fatalf("[ERROR]: Failed to read config file - \"%v\"", err)
+		log.Fatalf("[ERROR]: Failed to read config file - \"%v\"", err)
 	}
 
 	// Connects to the database
@@ -30,7 +30,7 @@ func main() {
 	// Creates a state variable that holds the config and database queries
 
 	currentState := state{
-		db: dbQueries,
+		db:  dbQueries,
 		cfg: &currentCfg,
 	}
 
@@ -53,7 +53,7 @@ func main() {
 
 	userArgs := os.Args
 	if len(userArgs) < 2 {
-    	log.Fatalf("[ERROR]: No command given")
+		log.Fatalf("[ERROR]: No command given")
 	}
 
 	// Splits the CLI args into command name and then args for that command
