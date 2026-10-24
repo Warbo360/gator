@@ -3,13 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
+
 	"github.com/Warbo360/gator/internal/database"
 )
 
 // Handler function for the following command which prints all feeds being followed by the current user
 
 func handlerFollowing(s *state, cmd command, user database.User) error {
-
 	// SQL query that uses the current user ID to get all followed feeds
 
 	feeds, err := s.db.GetFeedFollowsForUser(context.Background(), user.ID)
